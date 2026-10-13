@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Way Does He Turn? · BDB 2027</title>
+<meta name="description" content="2027 NFL Big Data Bowl entry from Childress LLC: directional asymmetry in cuts, measured in Combine tracking and carried into NFL tracking.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23161615'/%3E%3Cpath d='M9 25 L13 11 Q15 7 19 8 L25 10' fill='none' stroke='%23eb6834' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("bdb-theme");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f6f6f3;
+  --surface: #fcfcfb;
+  --surface-2: #f0efec;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #7a7873;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --rule: rgba(11, 11, 11, 0.10);
+  --accent: #2b7552;
+  --accent-wash: rgba(43, 117, 82, 0.09);
+  --ccw: #2a78d6;
+  --cw: #eb6834;
+  --band-ccw: rgba(42, 120, 214, 0.22);
+  --band-cw: rgba(235, 104, 52, 0.24);
+  --nav-bg: rgba(246, 246, 243, 0.82);
+  --shadow: 0 1px 0 rgba(11,11,11,0.03), 0 8px 24px -12px rgba(11,11,11,0.12);
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --display: "Barlow Condensed", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #161615;
+    --surface-2: #1f1f1d;
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --muted: #8f8d87;
+    --grid: #2c2c2a;
+    --axis: #45453f;
+    --rule: rgba(255, 255, 255, 0.10);
+    --accent: #6cc79a;
+    --accent-wash: rgba(108, 199, 154, 0.10);
+    --ccw: #3987e5;
+    --cw: #d95926;
+    --band-ccw: rgba(57, 135, 229, 0.30);
+    --band-cw: rgba(217, 89, 38, 0.32);
+    --nav-bg: rgba(13, 13, 13, 0.80);
+    --shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px -12px rgba(0,0,0,0.6);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #161615;
+  --surface-2: #1f1f1d;
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --muted: #8f8d87;
+  --grid: #2c2c2a;
+  --axis: #45453f;
+  --rule: rgba(255, 255, 255, 0.10);
+  --accent: #6cc79a;
+  --accent-wash: rgba(108, 199, 154, 0.10);
+  --ccw: #3987e5;
+  --cw: #d95926;
+  --band-ccw: rgba(57, 135, 229, 0.30);
+  --band-cw: rgba(217, 89, 38, 0.32);
+  --nav-bg: rgba(13, 13, 13, 0.80);
+  --shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px -12px rgba(0,0,0,0.6);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 400 17px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+code { background: var(--surface-2); padding: 0.1em 0.35em; border-radius: 4px; }
+::selection { background: var(--accent-wash); }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.prose { max-width: 700px; }
+.prose p { margin: 0 0 1em; color: var(--ink-2); }
+.prose p strong { color: var(--ink); font-weight: 600; }
+
+/* nav */
+.nav {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--nav-bg);
+  backdrop-filter: saturate(1.4) blur(12px);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 56px; }
+.brand { font: 600 13px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand span { color: var(--muted); }
+.nav ul { display: flex; gap: 18px; list-style: none; margin: 0 0 0 auto; padding: 0; }
+.nav ul a { font-size: 14px; color: var(--ink-2); text-decoration: none; }
+.nav ul a:hover { color: var(--ink); }
+.theme-btn {
+  appearance: none; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-2);
+  width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; cursor: pointer; flex: none;
+}
+.theme-btn:hover { color: var(--ink); }
+.theme-btn svg { width: 16px; height: 16px; }
+@media (max-width: 860px) { .nav ul { display: none; } .theme-btn { margin-left: auto; } }
+
+/* hero */
+.hero { padding: 72px 0 40px; }
+.eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.eyebrow b { color: var(--accent); font-weight: 600; }
+h1 {
+  font-family: var(--display); font-weight: 700; letter-spacing: -0.01em;
+  font-size: clamp(48px, 9vw, 104px); line-height: 0.92; margin: 18px 0 24px;
+  text-wrap: balance;
+}
+.dek { font-size: clamp(18px, 2.2vw, 21px); line-height: 1.55; color: var(--ink-2); max-width: 760px; margin: 0; text-wrap: pretty; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; font: 500 13px/1.4 var(--mono); color: var(--muted); }
+.meta span::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--axis); margin-right: 8px; vertical-align: 2px; }
+.meta .live::before { background: var(--accent); }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); overflow: hidden; margin: 40px 0 0; box-shadow: var(--shadow); }
+.stat { padding: 20px 22px; border-left: 1px solid var(--rule); }
+.stat:first-child { border-left: 0; }
+.stat .v { font-family: var(--display); font-weight: 600; font-size: 38px; line-height: 1; letter-spacing: -0.01em; }
+.stat .l { margin-top: 8px; font-size: 13.5px; line-height: 1.4; color: var(--ink-2); }
+@media (max-width: 760px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat:nth-child(3) { border-left: 0; }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--rule); }
+}
+
+/* sections */
+section { padding: 64px 0 16px; }
+.sec-head { display: grid; grid-template-columns: 120px 1fr; gap: 24px; align-items: baseline; margin-bottom: 28px; }
+.sec-num { font: 500 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 14px; border-top: 1px solid var(--ink); }
+h2 { font-family: var(--display); font-weight: 600; font-size: clamp(32px, 4.4vw, 46px); line-height: 1.02; margin: 0; letter-spacing: -0.005em; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height: 1.1; margin: 0 0 10px; letter-spacing: 0.005em; }
+.sec-body { margin-left: 144px; }
+@media (max-width: 860px) {
+  .sec-head { grid-template-columns: 1fr; gap: 14px; }
+  .sec-num { width: fit-content; min-width: 72px; padding-right: 6px; white-space: nowrap; }
+  .sec-body { margin-left: 0; }
+}
+
+.callout {
+  border-left: 3px solid var(--accent); background: var(--accent-wash);
+  padding: 18px 22px; border-radius: 0 10px 10px 0; margin: 8px 0 28px; max-width: 760px;
+}
+.callout .k { font: 600 12px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.callout p { margin: 0; font-size: 19px; line-height: 1.5; color: var(--ink); }
+
+.aside-note { font-size: 15px; color: var(--ink-2); max-width: 700px; border-top: 1px dashed var(--rule); padding-top: 14px; margin-top: 8px; }
+.aside-note b { color: var(--ink); font-weight: 600; }
+
+/* cards */
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 22px 22px 20px; box-shadow: var(--shadow); }
+.card .n { font: 600 12px/1 var(--mono); color: var(--muted); letter-spacing: 0.06em; margin-bottom: 14px; }
+.card p { margin: 0; color: var(--ink-2); font-size: 15.5px; line-height: 1.55; }
+@media (max-width: 700px) { .cards { grid-template-columns: 1fr; } }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font: 600 11.5px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; }
+td.wrap-ok { white-space: normal; min-width: 220px; }
+tbody tr:hover td { background: var(--accent-wash); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+@media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+.tbl-cap { font-size: 13.5px; color: var(--muted); margin: 8px 2px 0; }
+
+ul.plain { padding-left: 1.1em; margin: 0 0 1em; color: var(--ink-2); }
+ul.plain li { margin: 0.35em 0; }
+ul.plain li::marker { color: var(--muted); }
+
+/* pipeline */
+.pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 36px; }
+.step { padding: 18px 18px 20px; border-left: 1px solid var(--rule); position: relative; }
+.step:first-child { border-left: 0; }
+.step .s { font: 600 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.step .s i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--axis); display: inline-block; }
+.step.done .s i { background: var(--accent); border-color: var(--accent); }
+.step.part .s i { background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); border-color: var(--accent); }
+.step h4 { font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.05; margin: 12px 0 8px; }
+.step p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+@media (max-width: 900px) {
+  .pipeline { grid-template-columns: 1fr; }
+  .step { border-left: 0; border-top: 1px solid var(--rule); }
+  .step:first-child { border-top: 0; }
+}
+
+/* figures */
+figure { margin: 0 0 40px; }
+.fig-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 22px; box-shadow: var(--shadow); }
+.fig-label { display: flex; justify-content: space-between; gap: 16px; font: 500 12px/1.4 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+.fig-title { font-family: var(--display); font-weight: 600; font-size: 24px; line-height: 1.1; margin: 0 0 4px; }
+.fig-sub { font-size: 14.5px; color: var(--ink-2); margin: 0 0 20px; }
+figcaption { font-size: 14.5px; line-height: 1.55; color: var(--ink-2); margin-top: 14px; max-width: 760px; }
+figcaption b { color: var(--ink); font-weight: 600; }
+
+.schem { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.schem svg { width: 100%; height: auto; display: block; }
+.schem .panel-t { font: 600 11.5px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+@media (max-width: 760px) { .schem { grid-template-columns: 1fr; } }
+.svg-ink { fill: var(--ink); }
+.svg-ink2 { fill: var(--ink-2); }
+.svg-muted { fill: var(--muted); }
+.formulas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+.formulas div { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
+.formulas b { display: block; font: 600 11px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.formulas span.v { font-family: var(--mono); color: var(--ink); font-size: 13px; }
+@media (max-width: 760px) { .formulas { grid-template-columns: 1fr; } }
+
+/* charts (HTML) */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: var(--ink-2); margin-bottom: 16px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.legend i.tick { width: 2px; height: 14px; border-radius: 1px; background: var(--ink); }
+.legend i.ref { width: 0; height: 14px; border-left: 2px dashed var(--muted); border-radius: 0; }
+
+.crow { display: grid; grid-template-columns: 190px 1fr 92px; gap: 14px; align-items: center; padding: 10px 0; border-top: 1px solid var(--grid); }
+.crow:first-of-type { border-top: 0; }
+.crow .lab { font-size: 14.5px; line-height: 1.3; color: var(--ink); }
+.crow .lab small { display: block; color: var(--muted); font-size: 12.5px; }
+.crow .val { font: 500 13.5px/1.3 var(--mono); color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.crow .val small { display: block; color: var(--muted); font-size: 11.5px; }
+.track { position: relative; height: 26px; }
+.seg { position: absolute; top: 3px; bottom: 3px; }
+.seg.ccw { left: 0; background: var(--ccw); border-radius: 4px 0 0 4px; }
+.seg.cw { right: 0; background: var(--cw); border-radius: 0 4px 4px 0; }
+.mark-exp { position: absolute; top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--ink); border-radius: 1px; box-shadow: 0 0 0 2px var(--surface); }
+.axis-row { display: grid; grid-template-columns: 190px 1fr 92px; gap: 14px; }
+.axis { position: relative; height: 22px; border-top: 1px solid var(--axis); }
+.axis span { position: absolute; top: 5px; transform: translateX(-50%); font: 500 11.5px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.axis-title { font: 500 11.5px/1.3 var(--mono); color: var(--muted); text-align: center; margin-top: 4px; letter-spacing: 0.04em; }
+
+.range .track { height: 30px; }
+.gridline { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid); }
+.refline { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2px dashed var(--muted); margin-left: -1px; }
+.band { position: absolute; top: 9px; height: 12px; border-radius: 6px; }
+.band.ccw { background: var(--band-ccw); box-shadow: inset 0 0 0 1px var(--ccw); }
+.band.cw { background: var(--band-cw); box-shadow: inset 0 0 0 1px var(--cw); }
+.dot { position: absolute; top: 15px; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface); }
+.dot.ccw { background: var(--ccw); }
+.dot.cw { background: var(--cw); }
+
+@media (max-width: 640px) {
+  .crow, .axis-row { grid-template-columns: 1fr 74px; }
+  .crow .lab { grid-column: 1 / -1; }
+  .axis-row > div:first-child { display: none; }
+  .crow .track { grid-column: 1; }
+}
+
+[data-tip] { cursor: default; }
+.tip {
+  position: fixed; z-index: 50; pointer-events: none; opacity: 0; transition: opacity .12s;
+  background: var(--ink); color: var(--page); font: 500 12.5px/1.45 var(--sans);
+  padding: 8px 10px; border-radius: 8px; max-width: 260px; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+}
+.tip.on { opacity: 1; }
+.tip b { font-weight: 650; }
+
+details { border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); margin-top: 14px; }
+details summary { cursor: pointer; padding: 12px 16px; font-size: 14.5px; color: var(--ink-2); list-style: none; display: flex; align-items: center; gap: 10px; }
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: "+"; font: 600 15px/1 var(--mono); color: var(--muted); width: 12px; }
+details[open] summary::before { content: "−"; }
+details .tbl-wrap { border: 0; border-top: 1px solid var(--rule); border-radius: 0 0 12px 12px; max-height: 460px; overflow: auto; }
+
+/* equation */
+.eq { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; margin: 4px 0 18px; overflow-x: auto; box-shadow: var(--shadow); }
+.eq .main { font: 500 17px/1.6 var(--mono); color: var(--ink); white-space: nowrap; }
+.eq .main sub { font-size: 0.7em; }
+.eq .side { font: 400 13.5px/1.5 var(--mono); color: var(--muted); margin-top: 6px; }
+
+/* fig1 */
+.fig1 { border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: #0b0b0b; box-shadow: var(--shadow); }
+:root[data-theme="light"] .fig1 { background: #f2f2ef; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .fig1 { background: #f2f2ef; } }
+.fig1 iframe { display: block; width: 100%; height: 1120px; border: 0; }
+@media (max-width: 820px) { .fig1 iframe { height: 1080px; } }
+@media (max-width: 600px) { .fig1 iframe { height: 1010px; } }
+.fig1-bar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font: 500 12px/1.4 var(--mono); color: var(--muted); margin: 10px 2px 0; letter-spacing: 0.04em; }
+
+/* risks */
+.risk { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.risk .card.kill { border-color: color-mix(in srgb, var(--cw) 45%, var(--rule)); }
+.risk .card.kill .n { color: var(--cw); }
+@media (max-width: 760px) { .risk { grid-template-columns: 1fr; } }
+
+/* roadmap */
+.road { list-style: none; margin: 0; padding: 0; position: relative; max-width: 760px; }
+.road::before { content: ""; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 1px; background: var(--axis); }
+.road li { position: relative; padding: 0 0 22px 36px; }
+.road li::before { content: ""; position: absolute; left: 0; top: 5px; width: 15px; height: 15px; border-radius: 50%; background: var(--page); border: 1.5px solid var(--axis); }
+.road li.done::before { background: var(--accent); border-color: var(--accent); }
+.road li.part::before { background: linear-gradient(90deg, var(--accent) 50%, var(--page) 50%); border-color: var(--accent); }
+.road li.goal::before { border-color: var(--ink); border-width: 2px; }
+.road .t { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1.15; }
+.road .t .tag { font: 600 10.5px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 7px; border-radius: 99px; margin-left: 8px; vertical-align: 3px; border: 1px solid var(--rule); color: var(--muted); }
+.road .done .tag { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.road .d { font-size: 15px; color: var(--ink-2); margin-top: 3px; }
+
+/* refs */
+.refs { list-style: none; padding: 0; margin: 0; counter-reset: r; max-width: 820px; }
+.refs li { counter-increment: r; display: grid; grid-template-columns: 34px 1fr; gap: 8px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.refs li:first-child { border-top: 0; padding-top: 0; }
+.refs li::before { content: "[" counter(r) "]"; font: 500 13px/1.6 var(--mono); color: var(--muted); }
+.refs .c { font-size: 15.5px; line-height: 1.5; }
+.refs .c i { font-style: italic; }
+.refs .why { font-size: 14.5px; color: var(--ink-2); margin-top: 5px; }
+
+/* repo */
+pre { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; overflow-x: auto; font: 13.5px/1.65 var(--mono); color: var(--ink); margin: 0 0 16px; box-shadow: var(--shadow); }
+pre .c { color: var(--muted); }
+
+footer { margin-top: 72px; border-top: 1px solid var(--rule); padding: 28px 0 48px; font-size: 13.5px; color: var(--muted); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+@media (max-width: 600px) {
+  .wrap { padding: 0 16px; }
+  body { font-size: 16px; }
+  .hero { padding-top: 48px; }
+  .fig-card { padding: 16px; }
+  section { padding-top: 52px; }
+  th, td { padding: 9px 10px; }
+  table { font-size: 13.5px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="brand" href="#top">BDB 2027 <span>/ Childress LLC</span></a>
+    <ul>
+      <li><a href="#thesis">Thesis</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#play">The play</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#refs">References</a></li>
+    </ul>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5v11" /><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor" stroke="none"/></svg>
+    </button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow"><b>2027 NFL Big Data Bowl</b> &nbsp;·&nbsp; Combine tracking → NFL performance</div>
+    <h1>Which way does he turn?</h1>
+    <p class="dek">Scouts say a receiver opens his hips better one way. We measure that as the gap between his counterclockwise and clockwise cuts in Combine tracking, run the same detector on three seasons of NFL tracking, and test whether the weak side costs receivers separation and defensive backs coverage.</p>
+    <div class="meta">
+      <span>Childress LLC</span>
+      <span class="live">Phases 1–2 of 5 complete</span>
+      <span>Submission due 6 Jan 2027, 23:59 UTC</span>
+    </div>
+    <div class="stats" role="list">
+      <div class="stat" role="listitem"><div class="v">510</div><div class="l">drafted players from the 2023–25 Combines</div></div>
+      <div class="stat" role="listitem"><div class="v">431,094</div><div class="l">Combine player frames at 10&nbsp;Hz</div></div>
+      <div class="stat" role="listitem"><div class="v">14.2M</div><div class="l">in-play NFL frames, 2023–25</div></div>
+      <div class="stat" role="listitem"><div class="v">72,521</div><div class="l">valid cuts: 3,333 Combine + 69,188 NFL</div></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="thesis">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">01 · Thesis</div><h2>The Combine times straight lines. Football is played in turns.</h2></div>
+    <div class="sec-body">
+      <div class="prose">
+        <p>In a 2019 study of NFL receivers, forty time correlated with PFF grade at <strong>r&nbsp;=&nbsp;.18</strong>, and the Combine number most associated with receiver production was the 3-cone, the drill with the most turning (<strong>r&nbsp;=&nbsp;.43</strong> with DYAR) <a href="#ref-2">[2]</a>. A stopwatch can't say which way a player turned or what it cost him. Combine tracking can: every drill attempt is recorded at 10&nbsp;Hz with position, speed and heading.</p>
+      </div>
+      <div class="callout">
+        <div class="k">Hypothesis</div>
+        <p>Prospects have a weaker turning direction that is measurable at the Combine. It persists in NFL play, where it costs separation (WR) or coverage (DB).</p>
+      </div>
+      <p class="aside-note"><b>What we are not doing.</b> Top speed is already solved (tracked forty peak speed matches in-game top speed at about r&nbsp;=&nbsp;0.86), and single position-drill reps repeat at only r&nbsp;=&nbsp;0.24–0.31, too unreliable to predict anything on their own. A within-player gap sidesteps both problems.</p>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">02 · Design</div><h2>Why a within-player gap</h2></div>
+    <div class="sec-body">
+      <div class="cards">
+        <div class="card"><div class="n">A</div><h3>It cancels the draft-slot confound</h3><p>The outcome is the same player's left-break versus right-break performance. Draft capital, team, scheme and overall athleticism cancel out. What remains (field side, leverage, route type, coverage) is play-level and can be modeled.</p></div>
+        <div class="card"><div class="n">B</div><h3>The noise sits where we can measure it</h3><p>Each NFL player has hundreds of cuts per direction, so the game side is reliable. The Combine side is noisy, but repeated attempts on the same side give us the noise variance directly.</p></div>
+        <div class="card"><div class="n">C</div><h3>Teams can use it week to week</h3><p>Teams track every player, so in-game asymmetry is computable for any opponent: attack a corner's weak break direction, align a rookie edge to his strong side, or build a one-sided change-of-direction program.</p></div>
+        <div class="card"><div class="n">D</div><h3>A prior that the season updates</h3><p>The Combine value is a prior; NFL cuts update it. We report how many NFL cuts it takes before game evidence outweighs the Combine. A free laterality signal comes along: the athlete picks which way to start the shuttle.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">03 · Data</div><h2>510 rookies, tracked at the Combine and on Sundays</h2></div>
+    <div class="sec-body">
+      <div class="prose"><p>Nine contest files: every drill attempt from the 2023–25 Combines at 10&nbsp;Hz (the forty, 3-cone, shuttle and 55 position drills), NFL game tracking for the same players through 2025, a player-play table with routes, separation and coverage labels, and career outcomes. Only the 510 drafted rookies are tracked, so opponent-relative kinematics can't be built; game metrics come from the player's own movement plus the provided labels.</p></div>
+      <div class="two-col">
+        <div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Position group</th><th class="r">Players</th><th>In the model</th></tr></thead>
+            <tbody>
+              <tr><td>Wide receiver</td><td class="r">107</td><td>Yes</td></tr>
+              <tr><td>Defensive back</td><td class="r">122</td><td>Yes</td></tr>
+              <tr><td>Offensive line</td><td class="r">121</td><td>Fallback</td></tr>
+              <tr><td>Defensive line</td><td class="r">118</td><td>No</td></tr>
+              <tr><td>Tight end</td><td class="r">42</td><td>No</td></tr>
+            </tbody>
+          </table></div>
+          <p class="tbl-cap">WR and DB are pooled (N&nbsp;=&nbsp;229) because the plant-and-break is the same movement.</p>
+        </div>
+        <div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Draft class</th><th class="r">2023</th><th class="r">2024</th><th class="r">2025</th></tr></thead>
+            <tbody>
+              <tr><td>2023</td><td class="r">122</td><td class="r">116</td><td class="r">106</td></tr>
+              <tr><td>2024</td><td class="r">—</td><td class="r">131</td><td class="r">122</td></tr>
+              <tr><td>2025</td><td class="r">—</td><td class="r">—</td><td class="r">125</td></tr>
+            </tbody>
+          </table></div>
+          <p class="tbl-cap">Players with regular-season snaps, by NFL season. Exposure is uneven: the 2023 class has three seasons, the 2025 class one.</p>
+        </div>
+      </div>
+      <h3 style="margin-top:34px">What the warehouse fixes</h3>
+      <ul class="plain prose">
+        <li>The tracking <code>dis</code> column lags the coordinate step, so path length is rebuilt from x/y.</li>
+        <li>Drill names drift by year (56 raw names). A crosswalk merges aliases, and a drill enters a trait only if it was run in at least two Combine years; a one-year drill is confounded with its draft class.</li>
+        <li>Game tracking has 8 clock gaps (six of 200&nbsp;ms, two of 800&nbsp;ms). Each gap starts a new segment, so no cut can span a hole.</li>
+        <li>Outcomes use the regular season only (249,269 player-play rows). Preseason and postseason frames stay in the frame table and out of the trait.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">04 · Method</div><h2>One cut detector, two domains</h2></div>
+    <div class="sec-body">
+      <div class="pipeline">
+        <div class="step done"><div class="s"><i></i>Step 1 · done</div><h4>Warehouse</h4><p>DuckDB to Parquet star schema: players, drills, games, Combine frames, game frames, regular-season player-plays.</p></div>
+        <div class="step done"><div class="s"><i></i>Step 2 · done</div><h4>Cuts</h4><p>The same detector runs on Combine and game frames, so both sides describe one movement.</p></div>
+        <div class="step part"><div class="s"><i></i>Step 3 · built</div><h4>Combine prior</h4><p>Empirical-Bayes level (α) and side gap (δ) per player. Code and tests written; fit next.</p></div>
+        <div class="step"><div class="s"><i></i>Step 4</div><h4>NFL linkage</h4><p>Hierarchical model with player × direction effects and position-specific slopes.</p></div>
+        <div class="step"><div class="s"><i></i>Step 5</div><h4>Validation</h4><p>Fit on the 2023–24 classes, test on 2025, against draft pick + times + NGS score.</p></div>
+      </div>
+
+      <figure>
+        <div class="fig-card">
+          <div class="fig-label"><span>Fig 2</span><span>Schematic, not a real cut</span></div>
+          <p class="fig-title">What counts as a cut</p>
+          <p class="fig-sub">Heading change of at least 45° within five frames (0.5&nbsp;s). This one turns 60° clockwise.</p>
+          <div class="schem">
+            <div>
+              <div class="panel-t">Path, 10 Hz</div>
+              <svg viewBox="0 0 360 270" role="img" aria-label="A route drawn as dots at 10 frames per second. Frames i to i plus 5 are highlighted; the heading changes by 60 degrees clockwise across them.">
+                <defs>
+                  <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 z" fill="var(--ink-2)"/></marker>
+                  <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 z" fill="var(--cw)"/></marker>
+                </defs>
+                <g stroke="var(--grid)" stroke-width="1">
+                  <line x1="20" y1="30" x2="20" y2="250"/><line x1="90" y1="30" x2="90" y2="250"/><line x1="160" y1="30" x2="160" y2="250"/><line x1="230" y1="30" x2="230" y2="250"/>
+                </g>
+                <line x1="64.5" y1="174.3" x2="90.6" y2="76.9" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="3 4"/>
+                <polyline points="48,236 56.3,205.2 64.5,174.3 72.7,143.9 82.2,117.9 95.6,98.6 112.4,84.6 133.7,74.6 159.7,67.7 187.7,60.2 216.9,52.3 246.9,44.3" fill="none" stroke="var(--axis)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="64.5,174.3 72.7,143.9 82.2,117.9 95.6,98.6 112.4,84.6 133.7,74.6" fill="none" stroke="var(--cw)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <g fill="var(--muted)">
+                  <circle cx="48" cy="236" r="3"/><circle cx="56.3" cy="205.2" r="3"/><circle cx="159.7" cy="67.7" r="3"/><circle cx="187.7" cy="60.2" r="3"/><circle cx="216.9" cy="52.3" r="3"/><circle cx="246.9" cy="44.3" r="3"/>
+                </g>
+                <g fill="var(--cw)" stroke="var(--surface)" stroke-width="2">
+                  <circle cx="72.7" cy="143.9" r="4"/><circle cx="82.2" cy="117.9" r="4"/><circle cx="112.4" cy="84.6" r="4"/>
+                  <circle cx="64.5" cy="174.3" r="5.5"/><circle cx="95.6" cy="98.6" r="5.5"/><circle cx="133.7" cy="74.6" r="5.5"/>
+                </g>
+                <g font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="11.5">
+                  <text x="75" y="186" class="svg-ink">i · entry</text>
+                  <text x="104" y="114" class="svg-ink">apex</text>
+                  <text x="141" y="93" class="svg-ink">i+5 · exit</text>
+                  <text x="84" y="70" text-anchor="end" class="svg-muted" font-size="10.5">entry heading</text>
+                </g>
+                <g transform="translate(236 206)">
+                  <line x1="0" y1="0" x2="12.9" y2="-48.3" stroke="var(--ink-2)" stroke-width="1.5" marker-end="url(#ah)"/>
+                  <line x1="0" y1="0" x2="48.3" y2="-12.9" stroke="var(--cw)" stroke-width="1.8" marker-end="url(#ahc)"/>
+                  <path d="M7.8 -29 A30 30 0 0 1 29 -7.8" fill="none" stroke="var(--cw)" stroke-width="1.5"/>
+                  <circle r="2.5" fill="var(--ink-2)"/>
+                  <text x="-6" y="18" font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="11.5" class="svg-ink">Δ −60° in 0.5 s</text>
+                  <text x="-6" y="33" font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="10.5" class="svg-muted">→ clockwise cut</text>
+                </g>
+              </svg>
+            </div>
+            <div>
+              <div class="panel-t">Speed through the cut</div>
+              <svg viewBox="0 0 360 250" role="img" aria-label="Speed drops from 7.5 yards per second at entry to 5.2 at the apex, is 6.4 at exit, and regains 90 percent of entry speed 0.3 seconds after the apex.">
+                <rect x="100.9" y="26" width="127.3" height="164" fill="var(--band-cw)" opacity="0.45"/>
+                <g stroke="var(--grid)" stroke-width="1">
+                  <line x1="50" y1="150" x2="330" y2="150"/><line x1="50" y1="110" x2="330" y2="110"/><line x1="50" y1="70" x2="330" y2="70"/><line x1="50" y1="30" x2="330" y2="30"/>
+                </g>
+                <line x1="50" y1="190" x2="330" y2="190" stroke="var(--axis)" stroke-width="1"/>
+                <line x1="50" y1="80" x2="330" y2="80" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 4"/>
+                <polyline points="50,46 75.5,46 100.9,50 126.4,86 151.8,126 177.3,142 202.7,126 228.2,94 253.6,74 279.1,62 304.5,54 330,50" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                <g fill="var(--cw)" stroke="var(--surface)" stroke-width="2">
+                  <circle cx="100.9" cy="50" r="5.5"/><circle cx="177.3" cy="142" r="5.5"/><circle cx="228.2" cy="94" r="5.5"/>
+                </g>
+                <circle cx="253.6" cy="74" r="5.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+                <g font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="11.5">
+                  <text x="104" y="40" class="svg-ink">entry 7.5</text>
+                  <text x="177.3" y="163" text-anchor="middle" class="svg-ink">apex 5.2</text>
+                  <text x="218" y="98" text-anchor="end" class="svg-ink">exit 6.4</text>
+                  <text x="354" y="96" text-anchor="end" class="svg-ink">90% regained</text>
+                  <text x="354" y="109" text-anchor="end" class="svg-muted" font-size="10.5">0.3 s after apex</text>
+                  <text x="55" y="94" class="svg-muted" font-size="10.5">90%</text>
+                </g>
+                <g font-family="ui-monospace, SF Mono, Menlo, monospace" font-size="10.5" class="svg-muted">
+                  <text x="44" y="194" text-anchor="end">4</text><text x="44" y="154" text-anchor="end">5</text><text x="44" y="114" text-anchor="end">6</text><text x="44" y="74" text-anchor="end">7</text><text x="44" y="34" text-anchor="end">8</text>
+                  <text x="50" y="206" text-anchor="middle">0</text><text x="100.9" y="206" text-anchor="middle">0.2</text><text x="151.8" y="206" text-anchor="middle">0.4</text><text x="202.7" y="206" text-anchor="middle">0.6</text><text x="253.6" y="206" text-anchor="middle">0.8</text><text x="304.5" y="206" text-anchor="middle">1.0</text>
+                  <text x="190" y="226" text-anchor="middle">seconds</text>
+                  <text x="14" y="110" text-anchor="middle" transform="rotate(-90 14 110)">speed, yd/s</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="formulas">
+            <div><b>Speed retained</b><span class="v">exit ÷ entry = 6.4 ÷ 7.5 ≈ 0.85</span></div>
+            <div><b>Brake into apex</b><span class="v">(5.2 − 7.5) ÷ 0.3 s ≈ −7.7 yd/s²</span></div>
+            <div><b>Time to regain 90%</b><span class="v">0.3 s after the apex</span></div>
+          </div>
+        </div>
+      </figure>
+
+      <div class="tbl-wrap" style="margin-bottom:12px"><table>
+        <thead><tr><th>Rule</th><th>Setting</th></tr></thead>
+        <tbody>
+          <tr><td>Heading</td><td class="wrap-ok">3-frame centered circular mean of <code>dir</code></td></tr>
+          <tr><td>Cut</td><td class="wrap-ok">|Δ heading| ≥ 45° across 5 frames (0.5&nbsp;s)</td></tr>
+          <tr><td>Side</td><td class="wrap-ok">Sign of Δ heading: counterclockwise (+) or clockwise (−)</td></tr>
+          <tr><td>Entry speed</td><td class="wrap-ok">At least 1.5&nbsp;yd/s, otherwise <i>slow</i></td></tr>
+          <tr><td>Overlaps</td><td class="wrap-ok">Apexes within 0.4&nbsp;s: keep the sharpest, mark the rest <i>suppressed</i></td></tr>
+          <tr><td>Recovery</td><td class="wrap-ok">Must regain 90% of entry speed, otherwise <i>no regain</i></td></tr>
+        </tbody>
+      </table></div>
+      <p class="tbl-cap" style="margin-bottom:40px">The 45° threshold was fixed before looking at outcomes and has not been tuned.</p>
+
+      <h3>The Combine prior</h3>
+      <div class="prose"><p>Each player's attempts on each side give an average speed retained. We split that into a level and a side gap:</p></div>
+      <div class="eq">
+        <div class="main">retained<sub>i,s</sub> = α<sub>i</sub> + δ<sub>i</sub> · c<sub>s</sub> + ε</div>
+        <div class="side">c<sub>s</sub> = +1 counterclockwise, −1 clockwise · Var(ε) = σ² / n<sub>cuts</sub></div>
+      </div>
+      <ul class="plain prose">
+        <li><b>σ²</b> comes from repeated attempts on the same side, so Combine noise is measured, not assumed.</li>
+        <li><b>α</b> and <b>δ</b> are partially pooled (DerSimonian–Laird). δ shares one variance across positions, with separate WR and DB means.</li>
+        <li>A player seen on one side only updates α, not δ; his reported δ is the position prior.</li>
+        <li>On the NFL side the outcome is WR separation at the throw by final break direction, and DB coverage outcomes by break direction.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">05 · Results so far</div><h2>The detector passed its gate before any linkage</h2></div>
+    <div class="sec-body">
+      <div class="prose"><p>Before linking anything to outcomes, the detector had to show that the sign of <code>dir</code> is right. The shuttle is symmetric by design and the W-drill is not, so each has a known expected split.</p></div>
+
+      <figure>
+        <div class="fig-card">
+          <div class="fig-label"><span>Fig 3</span><span>Valid cuts by side</span></div>
+          <p class="fig-title">Side split matches each drill's design</p>
+          <p class="fig-sub">Share of valid cuts that turn counterclockwise, against the split the drill should produce.</p>
+          <div class="legend">
+            <span><i style="background:var(--ccw)"></i>Counterclockwise</span>
+            <span><i style="background:var(--cw)"></i>Clockwise</span>
+            <span><i class="tick"></i>Expected split</span>
+          </div>
+          <div class="chart-a">
+            <div class="crow">
+              <div class="lab">Short shuttle<small>Combine · one break each way</small></div>
+              <div class="track" tabindex="0" data-tip="<b>Short shuttle</b><br>48.5% counterclockwise · 51.5% clockwise<br>Expected 50%. Modal attempt: one cut each way (94 attempts).">
+                <div class="seg ccw" style="width:calc(48.5% - 1px)"></div><div class="seg cw" style="width:calc(51.5% - 1px)"></div>
+                <div class="mark-exp" style="left:50%"></div>
+              </div>
+              <div class="val">48.5%<small>exp. 50%</small></div>
+            </div>
+            <div class="crow">
+              <div class="lab">NFL games<small>2023–25 · all valid cuts</small></div>
+              <div class="track" tabindex="0" data-tip="<b>NFL games</b><br>34,710 counterclockwise · 34,478 clockwise<br>50.2% / 49.8% of 69,188 valid cuts.">
+                <div class="seg ccw" style="width:calc(50.2% - 1px)"></div><div class="seg cw" style="width:calc(49.8% - 1px)"></div>
+                <div class="mark-exp" style="left:50%"></div>
+              </div>
+              <div class="val">50.2%<small>exp. 50%</small></div>
+            </div>
+            <div class="crow">
+              <div class="lab">W-drill<small>Combine · two breaks one way, one the other</small></div>
+              <div class="track" tabindex="0" data-tip="<b>W-drill</b><br>69.7% counterclockwise · 30.3% clockwise<br>Expected about 67%. Modal attempt: 2 counterclockwise, 1 clockwise (83 attempts).">
+                <div class="seg ccw" style="width:calc(69.7% - 1px)"></div><div class="seg cw" style="width:calc(30.3% - 1px)"></div>
+                <div class="mark-exp" style="left:66.7%"></div>
+              </div>
+              <div class="val">69.7%<small>exp. ≈67%</small></div>
+            </div>
+            <div class="axis-row"><div></div><div><div class="axis"><span style="left:0">0%</span><span style="left:25%">25%</span><span style="left:50%">50%</span><span style="left:75%">75%</span><span style="left:100%">100%</span></div><div class="axis-title">share counterclockwise</div></div><div></div></div>
+          </div>
+          <figcaption>The modal shuttle attempt has one cut each way (94 attempts); the modal W-drill attempt has two counterclockwise and one clockwise (83 attempts), so a 70/30 count is the drill working. NFL cuts split <b>50.2% / 49.8%</b>. The gate rule was: if either symmetric drill fell below a 40% share on one side with 30+ valid cuts, stop.</figcaption>
+        </div>
+      </figure>
+
+      <figure>
+        <div class="fig-card">
+          <div class="fig-label"><span>Fig 4</span><span>Valid cuts only</span></div>
+          <p class="fig-title">Combine and NFL cuts land on one scale</p>
+          <p class="fig-sub">Speed retained (exit ÷ entry speed). Band is the 10th–90th percentile, dot is the median.</p>
+          <div class="legend">
+            <span><i style="background:var(--ccw)"></i>Counterclockwise</span>
+            <span><i style="background:var(--cw)"></i>Clockwise</span>
+            <span><i class="ref"></i>1.00 = no speed lost</span>
+          </div>
+          <div class="chart-b range">
+            <!-- scale 0.6 to 1.4 -> 0% to 100% -->
+            <div class="crow">
+              <div class="lab">Combine, counterclockwise<small>1,513 cuts</small></div>
+              <div class="track" tabindex="0" data-tip="<b>Combine · counterclockwise</b><br>1,513 valid cuts<br>p10 0.81 · median 1.04 · p90 1.28 · mean 1.04">
+                <div class="gridline" style="left:25%"></div><div class="gridline" style="left:75%"></div><div class="refline" style="left:50%"></div>
+                <div class="band ccw" style="left:26.25%;width:58.75%"></div><div class="dot ccw" style="left:55%"></div>
+              </div>
+              <div class="val">1.04<small>median</small></div>
+            </div>
+            <div class="crow">
+              <div class="lab">Combine, clockwise<small>1,820 cuts</small></div>
+              <div class="track" tabindex="0" data-tip="<b>Combine · clockwise</b><br>1,820 valid cuts<br>p10 0.75 · median 1.01 · p90 1.26 · mean 1.00">
+                <div class="gridline" style="left:25%"></div><div class="gridline" style="left:75%"></div><div class="refline" style="left:50%"></div>
+                <div class="band cw" style="left:18.75%;width:63.75%"></div><div class="dot cw" style="left:51.25%"></div>
+              </div>
+              <div class="val">1.01<small>median</small></div>
+            </div>
+            <div class="crow">
+              <div class="lab">NFL, counterclockwise<small>34,710 cuts</small></div>
+              <div class="track" tabindex="0" data-tip="<b>NFL · counterclockwise</b><br>34,710 valid cuts<br>p10 0.74 · median 0.99 · p90 1.26 · mean 0.99">
+                <div class="gridline" style="left:25%"></div><div class="gridline" style="left:75%"></div><div class="refline" style="left:50%"></div>
+                <div class="band ccw" style="left:17.5%;width:65%"></div><div class="dot ccw" style="left:48.75%"></div>
+              </div>
+              <div class="val">0.99<small>median</small></div>
+            </div>
+            <div class="crow">
+              <div class="lab">NFL, clockwise<small>34,478 cuts</small></div>
+              <div class="track" tabindex="0" data-tip="<b>NFL · clockwise</b><br>34,478 valid cuts<br>p10 0.74 · median 0.99 · p90 1.26 · mean 1.00">
+                <div class="gridline" style="left:25%"></div><div class="gridline" style="left:75%"></div><div class="refline" style="left:50%"></div>
+                <div class="band cw" style="left:17.5%;width:65%"></div><div class="dot cw" style="left:48.75%"></div>
+              </div>
+              <div class="val">0.99<small>median</small></div>
+            </div>
+            <div class="axis-row"><div></div><div><div class="axis"><span style="left:0">0.6</span><span style="left:25%">0.8</span><span style="left:50%">1.0</span><span style="left:75%">1.2</span><span style="left:100%">1.4</span></div><div class="axis-title">speed retained</div></div><div></div></div>
+          </div>
+          <figcaption>Same detector, same spread. Population-level sides are balanced, as they should be; the asymmetry we care about is within each player, which is what the Combine prior (step 3) estimates.</figcaption>
+        </div>
+      </figure>
+
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Detected cuts</th><th class="r">Combine</th><th class="r">NFL</th></tr></thead>
+        <tbody>
+          <tr><td>All detections</td><td class="r">30,998</td><td class="r">1,570,873</td></tr>
+          <tr><td>Suppressed (overlapping apex)</td><td class="r">25,633</td><td class="r">1,270,111</td></tr>
+          <tr><td>Slow entry (&lt; 1.5 yd/s)</td><td class="r">2,025</td><td class="r">216,638</td></tr>
+          <tr><td>No regain of 90% speed</td><td class="r">7</td><td class="r">14,936</td></tr>
+          <tr><td><b>Valid</b></td><td class="r"><b>3,333</b></td><td class="r"><b>69,188</b></td></tr>
+          <tr><td>Valid, regular season only</td><td class="r">—</td><td class="r">54,921</td></tr>
+        </tbody>
+      </table></div>
+      <p class="tbl-cap">Regular-season valid cuts have a speed-retained SD of 0.216 (0.214 in preseason and postseason, which stay out of the trait).</p>
+
+      <details>
+        <summary>Combine cuts by drill (33 drills)</summary>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Canonical drill</th><th class="r">Attempts</th><th class="r">Cuts</th><th class="r">Valid share</th><th class="r">CCW share of valid</th></tr></thead>
+          <tbody>
+            <tr><td>gauntlet_drill</td><td class="r">404</td><td class="r">1,961</td><td class="r">0.5%</td><td class="r">70.0%</td></tr>
+            <tr><td>back_pedal_and_transition_45_degree_reaction</td><td class="r">241</td><td class="r">362</td><td class="r">19.6%</td><td class="r">43.7%</td></tr>
+            <tr><td>short_shuttle</td><td class="r">223</td><td class="r">2,885</td><td class="r">12.7%</td><td class="r">48.5%</td></tr>
+            <tr><td>line_drill</td><td class="r">217</td><td class="r">112</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>three_cone_drill</td><td class="r">203</td><td class="r">4,173</td><td class="r">8.3%</td><td class="r">8.1%</td></tr>
+            <tr><td>over_shoulder</td><td class="r">147</td><td class="r">86</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>box_drill</td><td class="r">125</td><td class="r">2,713</td><td class="r">13.6%</td><td class="r">66.4%</td></tr>
+            <tr><td>back_pedal_and_90_degree_break_to_ball</td><td class="r">124</td><td class="r">151</td><td class="r">13.2%</td><td class="r">45.0%</td></tr>
+            <tr><td>speed_out_left</td><td class="r">124</td><td class="r">95</td><td class="r">11.6%</td><td class="r">100.0%</td></tr>
+            <tr><td>w_drill</td><td class="r">124</td><td class="r">2,507</td><td class="r">12.9%</td><td class="r">69.7%</td></tr>
+            <tr><td>run_the_hoop_drill</td><td class="r">119</td><td class="r">2,848</td><td class="r">12.8%</td><td class="r">49.7%</td></tr>
+            <tr><td>dagger_route_left</td><td class="r">115</td><td class="r">26</td><td class="r">11.5%</td><td class="r">33.3%</td></tr>
+            <tr><td>body_control_drill</td><td class="r">113</td><td class="r">1,052</td><td class="r">17.2%</td><td class="r">51.4%</td></tr>
+            <tr><td>teryl_austin_drill_2</td><td class="r">113</td><td class="r">767</td><td class="r">13.7%</td><td class="r">42.9%</td></tr>
+            <tr><td>four_bag_agility_drill</td><td class="r">112</td><td class="r">2,757</td><td class="r">5.9%</td><td class="r">75.3%</td></tr>
+            <tr><td>front_start_wave_drill_and_lateral_reaction</td><td class="r">112</td><td class="r">2,958</td><td class="r">10.6%</td><td class="r">37.8%</td></tr>
+            <tr><td>red_zone_fade_right</td><td class="r">112</td><td class="r">41</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>post_corner_route_right</td><td class="r">111</td><td class="r">30</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>comeback_route_right</td><td class="r">110</td><td class="r">844</td><td class="r">15.6%</td><td class="r">75.8%</td></tr>
+            <tr><td>curl_route_right</td><td class="r">110</td><td class="r">1,163</td><td class="r">15.2%</td><td class="r">35.6%</td></tr>
+            <tr><td>slant_route_left</td><td class="r">110</td><td class="r">98</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>slot_sail_route_right</td><td class="r">106</td><td class="r">198</td><td class="r">0.5%</td><td class="r">0.0%</td></tr>
+            <tr><td>go_route_right</td><td class="r">105</td><td class="r">18</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>teryl_austin_drill_1</td><td class="r">103</td><td class="r">706</td><td class="r">14.6%</td><td class="r">1.0%</td></tr>
+            <tr><td>slot_strike_route_left</td><td class="r">102</td><td class="r">910</td><td class="r">11.0%</td><td class="r">2.0%</td></tr>
+            <tr><td>post_corner_route_left</td><td class="r">80</td><td class="r">14</td><td class="r">14.3%</td><td class="r">100.0%</td></tr>
+            <tr><td>back_pedal_and_react</td><td class="r">62</td><td class="r">667</td><td class="r">12.1%</td><td class="r">6.2%</td></tr>
+            <tr><td>corner_route</td><td class="r">61</td><td class="r">116</td><td class="r">2.6%</td><td class="r">33.3%</td></tr>
+            <tr><td>hook_route_right</td><td class="r">45</td><td class="r">548</td><td class="r">14.4%</td><td class="r">44.3%</td></tr>
+            <tr><td>wheel_route_left</td><td class="r">45</td><td class="r">2</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>in_route_left</td><td class="r">43</td><td class="r">77</td><td class="r">13.0%</td><td class="r">100.0%</td></tr>
+            <tr><td>flat_route_left</td><td class="r">42</td><td class="r">34</td><td class="r">0.0%</td><td class="r">—</td></tr>
+            <tr><td>end_zone_fade_right</td><td class="r">35</td><td class="r">79</td><td class="r">0.0%</td><td class="r">—</td></tr>
+          </tbody>
+        </table></div>
+      </details>
+      <p class="tbl-cap">Route drills can be one-sided because the route tree is (a speed out to the left is always counterclockwise). Attempts include attempts that produced no cut.</p>
+    </div>
+  </div>
+</section>
+
+<section id="play">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">06 · The play</div><h2>What the tracking records</h2></div>
+    <div class="sec-body">
+      <div class="prose"><p>One play from the game data: Tyler Scott's 35-yard crosser for Chicago against Buffalo at Soldier Field, preseason 2025. Hover or drag across the figure to scrub through the play. The dial is his speed; the column is the distance to the nearest tracked defender.</p></div>
+    </div>
+    <figure style="margin-top:8px">
+      <div class="fig1"><iframe id="fig1" title="Fig 1: Tyler Scott's 35-yard cross, interactive" loading="lazy" src="fig1-dark.html"></iframe></div>
+      <div class="fig1-bar"><span>FIG 1 · INTERACTIVE</span><a id="fig1Open" href="fig1-dark.html" target="_blank" rel="noopener">Open full size ↗</a></div>
+    </figure>
+  </div>
+</section>
+
+<section id="risks">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">07 · Risks</div><h2>How this could fail, and what we check first</h2></div>
+    <div class="sec-body">
+      <div class="risk">
+        <div class="card kill"><div class="n">KILL CRITERION</div><h3>Split-half reliability of the Combine gap</h3><p>Difference scores are less reliable than their parts. Below about 0.3, the Combine link won't survive a permutation test. The in-game asymmetry would still stand as a scouting tool, but the Combine prior would be weak.</p></div>
+        <div class="card"><div class="n">POWER</div><h3>Small groups only see big effects</h3><p>With 107 WRs, 80% power at α&nbsp;=&nbsp;0.05 detects |r| ≈ 0.27. If Combine reliability is 0.3 and game reliability 0.8, a true r of 0.4 shows up as about 0.2. Pooling WR and DB (N&nbsp;=&nbsp;229) and the within-player outcome are the response.</p></div>
+        <div class="card"><div class="n">BASELINE</div><h3>Beat what teams already have</h3><p>The comparison is draft pick + official Combine times + the NGS athleticism score already in <code>combine_results</code>. Beating the NFL's own composite is what team staff will care about.</p></div>
+        <div class="card"><div class="n">FALLBACK</div><h3>OL pass-set mechanics</h3><p>121 offensive linemen, the least-studied group: set depth, lateral speed and re-direction time on inside moves. Less crowded, but rushers aren't tracked and a within-role control roughly halves N.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">08 · Roadmap</div><h2>From warehouse to Combine stage</h2></div>
+    <div class="sec-body">
+      <ol class="road">
+        <li class="done"><div class="t">Warehouse<span class="tag">Done</span></div><div class="d">Nine CSVs into a Parquet star schema with clock-gap QA and a regular-season outcome table.</div></li>
+        <li class="done"><div class="t">Shared cut detector and sign gate<span class="tag">Done</span></div><div class="d">1.6M detections, 72,521 valid cuts, side split checked against drill design.</div></li>
+        <li class="part"><div class="t">Combine prior and the kill check<span class="tag">Built</span></div><div class="d">Empirical-Bayes α and δ per player (code and 34 unit tests written). Next: fit, then split-half reliability of δ.</div></li>
+        <li><div class="t">NFL outcomes by break direction</div><div class="d">WR separation at the throw and DB coverage outcomes, split by final break direction; hierarchical player × direction model.</div></li>
+        <li><div class="t">Out-of-class validation and write-up</div><div class="d">Fit on the 2023–24 classes, test on 2025, against the draft-pick + times + NGS baseline. Report the number of NFL cuts at which game evidence outweighs the Combine prior.</div></li>
+        <li class="goal"><div class="t">Kaggle submission · 6 Jan 2027</div><div class="d">Finalists present at the 2027 NFL Scouting Combine.</div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="refs">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">09 · References</div><h2>Related work</h2></div>
+    <div class="sec-body">
+      <ol class="refs">
+        <li id="ref-1"><div><div class="c">Nguyen, Q. &amp; Yurko, R. (2026). <a href="https://arxiv.org/abs/2603.17866"><i>NFL step-and-turn: A generative framework for evaluating player movement in American football.</i></a> arXiv:2603.17866.</div><div class="why">Models step length and turn angle (von Mises) with a player random effect on turn concentration. Our cut is an event-level version of their turn; their per-player concentration effect is the closest published analog to δ.</div></div></li>
+        <li id="ref-2"><div><div class="c">Weiss, A., Thakker, R., Nayyar, J. &amp; Schmiel, T. (2019). <i>Combine performance vs NFL success.</i> Wharton Moneyball Academy, Sports Analytics Student Research Journal.</div><div class="why">Forty time barely tracks WR grade (r&nbsp;=&nbsp;.18); the 3-cone was the Combine number most associated with WR production (r&nbsp;=&nbsp;.43 with DYAR). Small sample, but it points at turning.</div></div></li>
+        <li id="ref-3"><div><div class="c">Burke, B. (2019). <a href="https://www.sloansportsconference.com/research-papers/deepqb-deep-learning-with-player-tracking-to-quantify-quarterback-decision-making-performance"><i>DeepQB: Deep learning with player tracking to quantify quarterback decision-making &amp; performance.</i></a> MIT Sloan Sports Analytics Conference.</div><div class="why">Judges a realized choice against what the tracked situation offered. We use the same observed-versus-expected logic, with the player's other side as the comparison.</div></div></li>
+        <li id="ref-4"><div><div class="c">Melville, J. N. (2025). <a href="https://scholarsarchive.byu.edu/etd/11023"><i>Evaluating NFL quarterback decision making through tracking data.</i></a> MS thesis, Brigham Young University.</div><div class="why">Extends DeepQB with calibration and sharpness checks and over-expectation metrics (CPOE, YOE). A reference for validating tracking-based metrics against a baseline.</div></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="repo">
+  <div class="wrap">
+    <div class="sec-head"><div class="sec-num">10 · Code</div><h2>Repository</h2></div>
+    <div class="sec-body">
+<pre>src/bowl/warehouse/      <span class="c"># clock gaps, frame SQL, season and play windows</span>
+src/bowl/ontology/       <span class="c"># drill crosswalk and two-year eligibility</span>
+src/bowl/kinematics/     <span class="c"># cut detector, path length, DuckDB function</span>
+src/bowl/models/prior.py <span class="c"># empirical-Bayes Combine prior</span>
+scripts/                 <span class="c"># build_warehouse.py, build_cuts.py</span>
+tests/                   <span class="c"># 34 tests</span>
+results/                 <span class="c"># phase write-ups with exit counts</span>
+figures/bowl-table/      <span class="c"># Fig 1 source</span>
+docs/                    <span class="c"># this site</span></pre>
+<pre><span class="c"># contest CSVs go in data/nfl-big-data-bowl-2027/ (not redistributed)</span>
+python -m venv .venv &amp;&amp; .venv/bin/pip install duckdb numpy pytest
+.venv/bin/python scripts/build_warehouse.py
+.venv/bin/python scripts/build_cuts.py
+.venv/bin/pytest</pre>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Childress LLC · Austin, TX · Ryan Childress</span>
+    <span>Data: <a href="https://www.kaggle.com/competitions/nfl-big-data-bowl-2027">NFL Big Data Bowl 2027</a>. Raw contest data are not published here.</span>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById("themeBtn");
+  var frame = document.getElementById("fig1");
+  var open = document.getElementById("fig1Open");
+  var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+  function current() {
+    var t = root.getAttribute("data-theme");
+    if (t === "light" || t === "dark") return t;
+    return mq && mq.matches ? "dark" : "light";
+  }
+  function syncFigure() {
+    var file = current() === "dark" ? "fig1-dark.html" : "fig1-light.html";
+    if (frame && frame.getAttribute("src") !== file) frame.setAttribute("src", file);
+    if (open) open.setAttribute("href", file);
+  }
+  btn.addEventListener("click", function () {
+    var next = current() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("bdb-theme", next); } catch (e) {}
+    syncFigure();
+  });
+  if (mq && mq.addEventListener) mq.addEventListener("change", syncFigure);
+  syncFigure();
+
+  function fit() {
+    try {
+      var doc = frame.contentDocument;
+      if (!doc || !doc.documentElement) return;
+      var h = doc.documentElement.scrollHeight;
+      if (h > 200) frame.style.height = h + "px";
+    } catch (e) {}
+  }
+  frame.addEventListener("load", fit);
+  var rt;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { frame.style.height = ""; fit(); }, 150); });
+
+  var tip = document.getElementById("tip");
+  function place(x, y) {
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = Math.min(window.innerWidth - w - 8, Math.max(8, x + 14));
+    var top = y - h - 12; if (top < 8) top = y + 18;
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+  document.querySelectorAll("[data-tip]").forEach(function (el) {
+    el.addEventListener("pointerenter", function (e) { tip.innerHTML = el.getAttribute("data-tip"); tip.classList.add("on"); place(e.clientX, e.clientY); });
+    el.addEventListener("pointermove", function (e) { place(e.clientX, e.clientY); });
+    el.addEventListener("pointerleave", function () { tip.classList.remove("on"); });
+    el.addEventListener("focus", function () { var r = el.getBoundingClientRect(); tip.innerHTML = el.getAttribute("data-tip"); tip.classList.add("on"); place(r.left + r.width / 2, r.top); });
+    el.addEventListener("blur", function () { tip.classList.remove("on"); });
+  });
+})();
+</script>
+</body>
+</html>
